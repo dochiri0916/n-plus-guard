@@ -1,0 +1,8 @@
+rootProject.name = 'n-plus-guard'
+
+include 'core'
+include 'jdbc'
+include 'hibernate'
+include 'spring-boot-starter'
+include 'test-support'
+include 'sample-app'

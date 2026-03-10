@@ -1,0 +1,23 @@
+plugins {
+    id 'java-library'
+}
+
+description = 'spring-boot-starter'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+dependencies {
+    api project(':core')
+    api project(':jdbc')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

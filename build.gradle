@@ -1,0 +1,16 @@
+allprojects {
+    group = 'com.dochiri'
+    version = '0.0.1-SNAPSHOT'
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    pluginManager.withPlugin('java') {
+        dependencies {
+            testImplementation platform('org.junit:junit-bom:5.13.4')
+        }
+    }
+}
