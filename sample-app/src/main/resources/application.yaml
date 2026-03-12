@@ -1,3 +1,7 @@
 spring:
   application:
     name: n-plus-guard-sample
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
