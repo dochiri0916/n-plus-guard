@@ -6,7 +6,8 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 public record QuerySummary(
         int totalCount,
@@ -20,13 +21,13 @@ public record QuerySummary(
 
     public QuerySummary {
         if (totalCount < 0 || selectCount < 0 || insertCount < 0 || updateCount < 0 || deleteCount < 0 || otherCount < 0) {
-            throw new IllegalArgumentException("query counts must not be negative");
+            throw new IllegalArgumentException("query count는 음수일 수 없습니다");
         }
         repeatedSelects = repeatedSelects == null ? List.of() : List.copyOf(repeatedSelects);
     }
 
     public int count(QueryType queryType) {
-        return switch (Objects.requireNonNull(queryType, "queryType must not be null")) {
+        return switch (requireNonNull(queryType, "queryType은 null일 수 없습니다")) {
             case SELECT -> selectCount;
             case INSERT -> insertCount;
             case UPDATE -> updateCount;
@@ -43,7 +44,7 @@ public record QuerySummary(
     }
 
     public static QuerySummary from(Collection<QueryEvent> events) {
-        Objects.requireNonNull(events, "events must not be null");
+        requireNonNull(events, "events는 null일 수 없습니다");
 
         int selectCount = 0;
         int insertCount = 0;
@@ -98,4 +99,5 @@ public record QuerySummary(
             executions++;
         }
     }
+
 }

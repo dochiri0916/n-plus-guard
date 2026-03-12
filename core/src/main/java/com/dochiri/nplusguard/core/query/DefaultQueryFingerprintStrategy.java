@@ -30,9 +30,8 @@ public final class DefaultQueryFingerprintStrategy {
     private static String stripAliases(String sql) {
         Set<String> aliases = new LinkedHashSet<>();
         String withoutFromAliases = stripAliasDeclarations(sql, FROM_ALIAS, "from", aliases);
-        String withoutJoinAliases = stripAliasDeclarations(withoutFromAliases, JOIN_ALIAS, "join", aliases);
 
-        String fingerprint = withoutJoinAliases;
+        String fingerprint = stripAliasDeclarations(withoutFromAliases, JOIN_ALIAS, "join", aliases);
         for (String alias : aliases) {
             fingerprint = fingerprint.replaceAll("\\b" + Pattern.quote(alias) + "\\.", "");
         }
@@ -41,7 +40,7 @@ public final class DefaultQueryFingerprintStrategy {
 
     private static String stripAliasDeclarations(String sql, Pattern pattern, String keyword, Set<String> aliases) {
         Matcher matcher = pattern.matcher(sql);
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         while (matcher.find()) {
             aliases.add(matcher.group(2));
             matcher.appendReplacement(buffer, keyword + " " + matcher.group(1));
@@ -49,4 +48,5 @@ public final class DefaultQueryFingerprintStrategy {
         matcher.appendTail(buffer);
         return buffer.toString();
     }
+
 }

@@ -1,6 +1,6 @@
 package com.dochiri.nplusguard.core.query;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 public record RepeatedQuery(
         String fingerprint,
@@ -9,10 +9,11 @@ public record RepeatedQuery(
 ) {
 
     public RepeatedQuery {
-        Objects.requireNonNull(fingerprint, "fingerprint must not be null");
-        Objects.requireNonNull(normalizedSql, "normalizedSql must not be null");
+        requireNonNull(fingerprint, "fingerprint는 null일 수 없습니다");
+        requireNonNull(normalizedSql, "normalizedSql은 null일 수 없습니다");
         if (executions <= 0) {
-            throw new IllegalArgumentException("executions must be positive");
+            throw new IllegalArgumentException("executions는 1 이상이어야 합니다");
         }
     }
+
 }

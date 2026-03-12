@@ -48,4 +48,5 @@ public class Member {
         orders.add(order);
         order.assignMember(this);
     }
+
 }

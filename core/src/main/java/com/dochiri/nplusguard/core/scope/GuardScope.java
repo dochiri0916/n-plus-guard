@@ -6,9 +6,10 @@ import com.dochiri.nplusguard.core.query.QuerySummary;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
 
 public final class GuardScope implements AutoCloseable {
 
@@ -17,7 +18,7 @@ public final class GuardScope implements AutoCloseable {
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
     GuardScope(Consumer<GuardScope> onClose) {
-        this.onClose = Objects.requireNonNull(onClose, "onClose는 null일 수 없습니다");
+        this.onClose = requireNonNull(onClose, "onClose는 null일 수 없습니다");
     }
 
     public boolean closed() {
@@ -25,7 +26,7 @@ public final class GuardScope implements AutoCloseable {
     }
 
     public void record(QueryEvent queryEvent) {
-        Objects.requireNonNull(queryEvent, "queryEvent는 null일 수 없습니다");
+        requireNonNull(queryEvent, "queryEvent는 null일 수 없습니다");
         if (closed()) {
             throw new IllegalStateException("닫힌 scope에는 queryEvent를 기록할 수 없습니다");
         }
@@ -44,4 +45,5 @@ public final class GuardScope implements AutoCloseable {
             onClose.accept(this);
         }
     }
+
 }

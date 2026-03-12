@@ -28,4 +28,5 @@ public final class ThreadLocalGuardScopeManager {
         }
         currentScope.remove();
     }
+
 }

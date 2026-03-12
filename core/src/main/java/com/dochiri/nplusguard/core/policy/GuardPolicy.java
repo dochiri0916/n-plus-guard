@@ -53,4 +53,5 @@ public record GuardPolicy(
             throw new IllegalStateException(String.join(System.lineSeparator(), violations));
         }
     }
+
 }

@@ -23,12 +23,9 @@ public final class DefaultQueryNormalizer {
         }
 
         String normalized = sql.strip();
-
         normalized = BLOCK_COMMENT.matcher(normalized).replaceAll(" ");
         normalized = LINE_COMMENT.matcher(normalized).replaceAll(" ");
-
         normalized = TRAILING_SEMICOLONS.matcher(normalized).replaceAll("");
-
         normalized = STRING_LITERAL.matcher(normalized).replaceAll("?");
         normalized = NUMERIC_LITERAL.matcher(normalized).replaceAll("?");
         normalized = normalized.toLowerCase(Locale.ROOT);
@@ -38,4 +35,5 @@ public final class DefaultQueryNormalizer {
 
         return normalized;
     }
+
 }

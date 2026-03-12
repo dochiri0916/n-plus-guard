@@ -6,8 +6,9 @@ import com.dochiri.nplusguard.core.scope.GuardScope;
 import com.dochiri.nplusguard.core.scope.ThreadLocalGuardScopeManager;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 public final class QueryGuardAssertions {
 
@@ -30,11 +31,10 @@ public final class QueryGuardAssertions {
             GuardPolicy policy,
             Supplier<T> action
     ) {
-        Objects.requireNonNull(scopeManager, "scopeManager는 null일 수 없습니다");
-        Objects.requireNonNull(policy, "policy는 null일 수 없습니다");
-        Objects.requireNonNull(action, "action은 null일 수 없습니다");
+        requireNonNull(scopeManager, "scopeManager는 null일 수 없습니다");
+        requireNonNull(policy, "policy는 null일 수 없습니다");
+        requireNonNull(action, "action은 null일 수 없습니다");
 
-        // 실제 검증 대상 액션 구간만 scope로 감싸 setup 쿼리와 분리한다.
         try (GuardScope scope = scopeManager.openScope()) {
             T result = action.get();
             QuerySummary summary = scope.summary();
@@ -58,4 +58,5 @@ public final class QueryGuardAssertions {
                 String.join(System.lineSeparator(), violations)
         ).trim();
     }
+
 }

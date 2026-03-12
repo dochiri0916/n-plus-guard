@@ -1,6 +1,6 @@
 package com.dochiri.nplusguard.core.query;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 public record QueryEvent(
         String sql,
@@ -10,10 +10,10 @@ public record QueryEvent(
 ) {
 
     public QueryEvent {
-        Objects.requireNonNull(sql, "sql은 null일 수 없습니다");
-        Objects.requireNonNull(normalizedSql, "normalizedSql은 null일 수 없습니다");
-        Objects.requireNonNull(fingerprint, "fingerprint는 null일 수 없습니다");
-        Objects.requireNonNull(queryType, "queryType은 null일 수 없습니다");
+        requireNonNull(sql, "sql은 null일 수 없습니다");
+        requireNonNull(normalizedSql, "normalizedSql은 null일 수 없습니다");
+        requireNonNull(fingerprint, "fingerprint는 null일 수 없습니다");
+        requireNonNull(queryType, "queryType은 null일 수 없습니다");
 
         if (sql.isBlank()) {
             throw new IllegalArgumentException("sql은 비어 있을 수 없습니다");
@@ -32,4 +32,5 @@ public record QueryEvent(
                 QueryType.fromSql(normalizedSql)
         );
     }
+
 }

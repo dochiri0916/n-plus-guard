@@ -25,7 +25,7 @@ public class NPlusGuardAutoConfiguration {
     public HibernatePropertiesCustomizer nPlusGuardHibernatePropertiesCustomizer(
             NPlusGuardStatementInspector statementInspector
     ) {
-        // Hibernate SessionFactory에 inspector를 주입해 SQL 실행 직전 hook을 연결한다.
         return properties -> properties.put("hibernate.session_factory.statement_inspector", statementInspector);
     }
+
 }
