@@ -1,104 +1,56 @@
 package com.dochiri.nplusguard.core.policy;
 
+import com.dochiri.nplusguard.core.query.QuerySummary;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 public record GuardPolicy(
-        String name,
-        GuardMode mode,
         int maxTotalQueries,
         int maxSelectQueries,
-        int maxRepeatedSelectExecutions,
-        List<String> excludedSqlPatterns
+        int maxRepeatedSelectExecutions
 ) {
 
     public GuardPolicy {
-        Objects.requireNonNull(name, "name must not be null");
-        Objects.requireNonNull(mode, "mode must not be null");
-        if (name.isBlank()) {
-            throw new IllegalArgumentException("name must not be blank");
-        }
         if (maxTotalQueries < 0 || maxSelectQueries < 0 || maxRepeatedSelectExecutions < 0) {
-            throw new IllegalArgumentException("guard policy limits must not be negative");
+            throw new IllegalArgumentException("guard policy 제한 값은 음수일 수 없습니다");
         }
-        excludedSqlPatterns = excludedSqlPatterns == null ? List.of() : List.copyOf(excludedSqlPatterns);
     }
 
-    public boolean hasTotalQueryLimit() {
-        return maxTotalQueries > 0;
+    public List<String> validate(QuerySummary summary) {
+        requireNonNull(summary, "summary는 null일 수 없습니다");
+
+        List<String> violations = new ArrayList<>();
+
+        if (maxTotalQueries > 0 && summary.totalCount() > maxTotalQueries) {
+            violations.add("전체 쿼리 수가 제한을 초과했습니다. actual=%d, limit=%d"
+                    .formatted(summary.totalCount(), maxTotalQueries));
+        }
+
+        if (maxSelectQueries > 0 && summary.selectCount() > maxSelectQueries) {
+            violations.add("SELECT 쿼리 수가 제한을 초과했습니다. actual=%d, limit=%d"
+                    .formatted(summary.selectCount(), maxSelectQueries));
+        }
+
+        int maxRepeatedSelectCount = summary.maxRepeatedSelectCount();
+        if (maxRepeatedSelectExecutions > 0 && maxRepeatedSelectCount > maxRepeatedSelectExecutions) {
+            violations.add("반복 SELECT 실행 횟수가 제한을 초과했습니다. actual=%d, limit=%d"
+                    .formatted(maxRepeatedSelectCount, maxRepeatedSelectExecutions));
+        }
+
+        return List.copyOf(violations);
     }
 
-    public boolean hasSelectQueryLimit() {
-        return maxSelectQueries > 0;
+    public boolean isSatisfiedBy(QuerySummary summary) {
+        return validate(summary).isEmpty();
     }
 
-    public boolean hasRepeatedSelectLimit() {
-        return maxRepeatedSelectExecutions > 0;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static final class Builder {
-        private String name = "guard-policy";
-        private GuardMode mode = GuardMode.FAIL;
-        private int maxTotalQueries;
-        private int maxSelectQueries;
-        private int maxRepeatedSelectExecutions;
-        private final List<String> excludedSqlPatterns = new ArrayList<>();
-
-        private Builder() {
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder mode(GuardMode mode) {
-            this.mode = mode;
-            return this;
-        }
-
-        public Builder maxTotalQueries(int maxTotalQueries) {
-            this.maxTotalQueries = maxTotalQueries;
-            return this;
-        }
-
-        public Builder maxSelectQueries(int maxSelectQueries) {
-            this.maxSelectQueries = maxSelectQueries;
-            return this;
-        }
-
-        public Builder maxRepeatedSelectExecutions(int maxRepeatedSelectExecutions) {
-            this.maxRepeatedSelectExecutions = maxRepeatedSelectExecutions;
-            return this;
-        }
-
-        public Builder addExcludedSqlPattern(String excludedSqlPattern) {
-            this.excludedSqlPatterns.add(excludedSqlPattern);
-            return this;
-        }
-
-        public Builder excludedSqlPatterns(List<String> excludedSqlPatterns) {
-            this.excludedSqlPatterns.clear();
-            if (excludedSqlPatterns != null) {
-                this.excludedSqlPatterns.addAll(excludedSqlPatterns);
-            }
-            return this;
-        }
-
-        public GuardPolicy build() {
-            return new GuardPolicy(
-                    name,
-                    mode,
-                    maxTotalQueries,
-                    maxSelectQueries,
-                    maxRepeatedSelectExecutions,
-                    excludedSqlPatterns
-            );
+    public void check(QuerySummary summary) {
+        List<String> violations = validate(summary);
+        if (!violations.isEmpty()) {
+            throw new IllegalStateException(String.join(System.lineSeparator(), violations));
         }
     }
 }

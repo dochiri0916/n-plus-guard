@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DefaultQueryNormalizerTest {
 
-    private final DefaultQueryNormalizer queryNormalizer = new DefaultQueryNormalizer();
-
     @Test
     void normalizesWhitespaceCommentsAndLiteralValues() {
         String sql = """
@@ -19,7 +17,7 @@ class DefaultQueryNormalizerTest {
                   AND o.id IN (1, 2, 3);
                 """;
 
-        String normalized = queryNormalizer.normalize(sql);
+        String normalized = DefaultQueryNormalizer.normalize(sql);
 
         assertEquals(
                 "select o.id, o.status from orders o where o.member_id = ? and o.status = ? and o.id in (?)",
