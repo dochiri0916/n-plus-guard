@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 description = 'spring-boot-starter'
@@ -10,9 +11,16 @@ java {
     }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:4.0.3'
+    }
+}
+
 dependencies {
     api project(':core')
-    api project(':jdbc')
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework.boot:spring-boot-hibernate'
 
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
