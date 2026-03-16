@@ -1,24 +1,24 @@
 # N+1 Guard
 
-Spring Data JPA 환경에서 반복 `SELECT` 패턴을 테스트 단계에서 빠르게 탐지하고 회귀를 차단하기 위한 쿼리 카운터 프로젝트다.
-여기에는 실행 가능한 코드와 핵심 요약만 두고, 설계 배경과 선택 이유는 블로그에 정리했다.
+Spring Data JPA 환경에서 반복 `SELECT` 패턴을 테스트 단계에서 빠르게 탐지하고 회귀를 차단하기 위한 쿼리 카운터 프로젝트입니다.
+이 저장소에는 실행 가능한 코드와 핵심 요약만 두었으며, 설계 배경과 선택 이유는 블로그에 정리해 두었습니다.
 
 ## 실험 범위
 
-- Hibernate `StatementInspector`로 SQL 수집
-- SQL 정규화(`normalizedSql`)와 패턴 키(`fingerprint`) 생성
-- scope 단위 쿼리 집계와 반복 `SELECT` 감지
-- `GuardPolicy` 허용 기준 초과 시 테스트 실패 처리
-- JUnit Extension(`@EnableQueryGuard`, `@QueryBudget`) 기반 자동 검증
-- 수동 검증 API(`QueryGuardAssertions.assertWithin`) 제공
-- `sample-app`에서 N+1 실패 케이스와 fetch join 통과 케이스 검증
+- Hibernate `StatementInspector`로 SQL을 수집합니다.
+- SQL 정규화(`normalizedSql`)와 패턴 키(`fingerprint`)를 생성합니다.
+- scope 단위로 쿼리를 집계하고 반복 `SELECT`를 감지합니다.
+- `GuardPolicy` 허용 기준을 초과하면 테스트를 실패 처리합니다.
+- JUnit Extension(`@EnableQueryGuard`, `@QueryBudget`) 기반으로 자동 검증합니다.
+- 수동 검증 API(`QueryGuardAssertions.assertWithin`)를 제공합니다.
+- `sample-app`에서 N+1 실패 케이스와 fetch join 통과 케이스를 검증합니다.
 
 ## 모듈 구성
 
-- `core`: 정규화/패턴화/집계/검증 핵심 로직
-- `spring-boot-starter`: SQL 수집 hook 자동 설정
-- `test-support`: 테스트 어노테이션/Extension/검증 유틸
-- `sample-app`: 재현 가능한 통합 테스트 예제
+- `core`: 정규화/패턴화/집계/검증 핵심 로직을 담당합니다.
+- `spring-boot-starter`: SQL 수집 hook을 자동 설정합니다.
+- `test-support`: 테스트 어노테이션/Extension/검증 유틸을 제공합니다.
+- `sample-app`: 재현 가능한 통합 테스트 예제를 제공합니다.
 
 ## 실행
 
